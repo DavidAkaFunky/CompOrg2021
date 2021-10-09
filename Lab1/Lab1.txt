@@ -1,0 +1,63 @@
+2.1 - The critical sequence of accesses which may have a larger impact on the performance of the system is the macroblock processing.
+
+2.3.1.1 - Compulsory miss: A miss that happens after the first access to a block (e.g. after booting), so it must be brought into the cache.
+          Capacity miss: A miss that happens when the cache cannot contain all blocks needed for a program and they end up being discarded before the access (more common in associative mapped caches)
+          Conflict miss: A miss that happens when two or more memory addresses map to the same cache block (more common in direct mapped caches, fixable by using a fully associative cache)
+
+(extra)
+capacity -> guardei 5 coisas, 4 foram substituidas pq nao havia espaco na cache e tentei ler denovo as 5 coisas, deu miss
+conflit -> guardei no 0x0 , outro tbm guardou no 0x0, fui ao 0x0 e ja nao estava la o que guardei inicialmente
+
+2.3.1.2 When receiving data:
+        - Write-through: Both the cache and the memory are updated
+        - Write-back: Only the cache is updated. The memory is updated only when the data is replaced in cache.
+        - Write-allocate: The data is loaded from the memory into the cache, updated and finally sent back to the memory (just before its replacement when used with write-back - more commonly - or immediately when used with write-through)
+        - Write-around: Only the main memory is updated (normally used when the data is not relevant at the moment)
+
+2.3.2
+    a)  Device       Technology     Access Time [ns]                 Price [€ / MByte]
+        Cache L1     SRAM (on-chip) 2 × [0.7 + 0.35 × log 2 (#ways)] 9
+        Frame Memory SDRAM          140                              0.01
+
+        SRAM has a capacity of 128 kBytes
+        Max cost: 0.018€ (for both cache L1 and frame memory)
+
+        1 MB - 1024 KB 
+        X MB - 128 KB
+        X = 128/1024 = 1/8 MB
+
+        The price for the frame memory is 1/8*0.01 = 0.00125€
+
+        Therefore we have 0.01675€ to spend in Cache L1
+
+        9 €       - 1 Mb
+        0.01675 € - X MB
+        X = 0.01675/9 = 0.00186(1) MB = 1.905(7) KB
+
+        Because L1_size = 2^MAX, the closest value to 1.905(7) KB is 1024 B = 2^10 Bytes with Max=10
+
+    b)
+            1024   512    256    
+        8   0.0305 0.1247 0.1960
+        16  0.0363 0.1184 0.1829
+        32  0.0770 0.1492 0.2288
+        64  0.1181 0.2021 0.3340
+     Price  0.0088 0.0044 0.0022
+
+    9 € - 1048576 B
+    X € - lsize B 
+    X = 9*lsize/1048576
+
+    d)
+        Trade offer between cost and average miss-rate 
+        Cost = Price x Miss-Rate
+        
+
+
+    
+
+            
+
+
+            
+
