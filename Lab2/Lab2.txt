@@ -1,0 +1,61 @@
+(lab6p6)
+2.1: ...
+
+(----)
+2.2: 64 KB
+cache aquecida para arrays < 64KB causa hits
+               para arrays > 64KB é irrelevante pois vai conter os 
+                              ultimos blocos do array
+2.3: 16 B
+stride = 4 => miss, hit hit hit 
+stride = 8 => miss,hit             :> tempo de acesso vai aumentando
+stride = 16 => miss                   até estabilizar (sempre miss)
+etc
+2.4: 1000 - 375 = 625 ns
+Em 375 é o hit time pois a cache está aquecida e todo o array cabe
+Em 1000 é o miss time pois está constantemente a falhar 
+
+3  (lab6p4)
+3.1
+3.1.1 
+a)  The "L1 data cache misses" event
+Every time there is a miss in the L1 data cache, an event will be triggered
+
+b) --
+
+c)
+
+ . Cache Size = 32KB
+Until 32KB the average misses are negligible so we can assume the cache size is big enough to house 
+the whole array, the small average misses showned in the graph can be justified by the cache being used
+by another process and as a result not being able to fit the whole array
+From 32KB and above, the average miss rate goes up significatly because the cache cant fit the entire
+array resulting in multiple cache misses. 
+
+ . Block Size = 64B
+When using strides under 64B, the miss rate is lower because we are able to get at least a hit before
+we enter a new block (the first access is always a miss). From 64B onwards, we only access each cache block
+up to one time, resulting in a miss rate of 100% and, as a result, a stabilisation in the number of misses.
+
+
+ . Associativity set size = 
+The Associativity level can be found when analyzing higher strides. With the increase of strides, 
+the number of access lowers, filling less and less lines. In the limit, a certain stride will only 
+fill one line and the cache will only store as much as the level of Associativity.
+If the number of access is higher than the Associativity level then the values first stored will be rewritten
+by the newer ones, which will cause misses in latter accesses.
+When we reach a point when all blocks fetched equal the level of Associativity, none of those blocks
+will be replaced and the next stride will benefit from this blocks in cache, having zero misses.
+In our graph this happens with an array = 64KB and stride = 8192 meaning that all blocks needed 
+for this accesses are present in cache in the same set of Associativity. So 64KB/8KB = 8 access
+and therefore 8 ways of Associativity.
+
+
+3.1.2
+a)
+Change parameters of function PAPI_add_event to add l2 data cache misses to our event set.
+This will able us to track L2 cache and latter analyze the characteristics of
+the L2 cache. 
+Change default values of CACHE_MIN and CACHE_MAX to 64KB and 1024KB to trigger the L2 cache
+
+b)
