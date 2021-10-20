@@ -59,3 +59,129 @@ the L2 cache.
 Change default values of CACHE_MIN and CACHE_MAX to 64KB and 1024KB to trigger the L2 cache
 
 b)
+
+3.2.1
+
+a) The program described above is implemented in the multiply_matrices function in mm1.c source code.
+Each matrix is size N*N where N=512 
+each entry of the matrix is of size(int16_t) = 16 bits = 2B
+Therefore the memory required to accomodate each matrix is 512*512*2B = 512KB
+
+b)
+After resetting counter 'PAPI_L1_DCM' [x10^6]: 0.000000
+After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
+After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
+After stopping counter 'PAPI_L1_DCM'  [x10^6]: 134.346845
+After stopping counter 'PAPI_LD_INS'  [x10^6]: 3491.008470
+After stopping counter 'PAPI_SR_INS'  [x10^6]: 672.141375
+Wall clock cycles [x10^6]: 4000.497626
+Wall clock time [seconds]: 1.179302
+Matrix checksum: 2717908992
+
+
+
+Total number of L1 data cache misses 			134.3468
+Total number of load / store instructions completed 	3491+672
+Total number of clock cycles 				4000
+Elapsed time						1.1793
+
+
+
+c) 
+Hit-Rate = 1 - 134.346845/(3491.008470+672.141375) = 0.9677
+
+3.2.2
+
+a)
+The program described above is implemented in the transpose function and multiply_matrices function  in mm2.c source code.
+
+After resetting counter 'PAPI_L1_DCM' [x10^6]: 0.000000
+After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
+After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
+After stopping counter 'PAPI_L1_DCM'  [x10^6]: 4.211259
+After stopping counter 'PAPI_LD_INS'  [x10^6]: 402.660006
+After stopping counter 'PAPI_SR_INS'  [x10^6]: 134.217780
+Wall clock cycles [x10^6]: 743.958066
+Wall clock time [seconds]: 0.219311
+Matrix checksum: 2717908992
+
+Total number of L1 data cache misses 			4.21126 
+Total number of load / store instructions completed	402.6600+134.2179
+Total number of clock cycles 				743.9581
+Elapsed time						0.2193	
+
+b)
+Hit-Rate = 1 - 4.211259/(402.660006+134.217780) = 0.9922
+
+	
+
+c)
+After resetting counter 'PAPI_L1_DCM' [x10^6]: 0.000000
+After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
+After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
+After stopping counter 'PAPI_L1_DCM'  [x10^6]: 4.483849
+After stopping counter 'PAPI_LD_INS'  [x10^6]: 402.921948
+After stopping counter 'PAPI_SR_INS'  [x10^6]: 134.479925
+Wall clock cycles [x10^6]: 744.407653
+Wall clock time [seconds]: 0.219443
+Matrix checksum: 2717908992
+
+Total number of L1 data cache misses 			4.4838
+Total number of load / store instructions completed	402.9219+134.4799
+Total number of clock cycles 				744.4076
+Elapsed time						0.21944	
+
+Because of the time complexitty associated with transposing a matrix O(N^2) when compared to the multiplication of matrices O(N^3), it does not introduce relevant time penalty in the overall clock time of the program.
+
+
+d)
+# mm2 a contar com a transposicao ou nao ? 
+
+∆HitRate = HitRate1 - HitRate2 = 0.9922 - 0.9677 = 0.0245
+Speedup = 4000.497626/743.958066 = 5.3773
+Speedup = 1.179302/0.219311 = 5.3773
+Comment:
+Transpor é fixe
+
+
+3.2.3
+
+a)
+The program described above matches with the function "multiply_matrices_by_blocks" in the source code.
+From Section 3.1 the CLS (CACHE_LINE_SIZE) is 64B
+Each matrix element is of size(int16_t) = 16 bits = 2B
+Therefore we can accommodate 64/2 = 32 matrix elements in each cache line.
+Alteracao: #define CACHE_LINE_SIZE 64 // TODO: update this value
+
+b)
+After resetting counter 'PAPI_L1_DCM' [x10^6]: 0.000000
+After resetting counter 'PAPI_LD_INS' [x10^6]: 0.000000
+After resetting counter 'PAPI_SR_INS' [x10^6]: 0.000000
+After stopping counter 'PAPI_L1_DCM'  [x10^6]: 5.836904
+After stopping counter 'PAPI_LD_INS'  [x10^6]: 402.801665
+After stopping counter 'PAPI_SR_INS'  [x10^6]: 134.222203
+Wall clock cycles [x10^6]: 401.652163
+Wall clock time [seconds]: 0.118402
+Matrix checksum: 2717908992
+
+Total number of L1 data cache misses			5.836904
+Total number of load / store instructions completed  	402.801665+134.222203
+Total number of clock cycles 				401.652163
+Elapsed time						0.118402
+
+c)
+(susy ? menor hit rate mas mais rapido)
+Hit-rate:  1 - 5.836904/(402.801665+134.222203) = 0.9891
+
+d) hit-rate (straightforward implementation) = 0.9677
+
+(∆HitRate) = hit(straightforward) - hit(novo) = 0.9891 - 0.9677 = 0.0214
+
+speedup = t(straightforward) - t(new) = 1.179302 - 0.118402 = 1.0609
+
+
+e)
+
+(∆HitRate) = hit(transpose) - hit(novo) = 0.9922 - 0.9677 = 0.0245
+
+speedup = t(transpose) - t(new) = 0.21944 - 0.118402 = 0.101038
